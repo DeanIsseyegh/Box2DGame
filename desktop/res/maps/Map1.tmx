@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="20" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="Level1" tilewidth="32" tileheight="32" spacing="2">
+  <image source="Level1.png" width="1024" height="64"/>
+ </tileset>
+ <layer name="Platforms" width="100" height="20">
+  <data encoding="base64" compression="zlib">
+   eJzty7EJACAUQ8Fvby+6/6BmAhEsbO7gkSpVAAAAAAAAAPzQ00rtYkeajz/ONi+OAYc=
+  </data>
+ </layer>
+</map>
