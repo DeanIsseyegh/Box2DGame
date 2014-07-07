@@ -58,7 +58,6 @@ public class GameLevel implements Screen {
 		batch.begin();
 		player.update(deltaTime, batch);
 		batch.end();
-
 	}
 	
 	private void initPlayer() {
@@ -74,10 +73,15 @@ public class GameLevel implements Screen {
 
 
 	@Override
-	public void dispose() {}
+	public void dispose() {
+		player.dispose();
+		batch.dispose();
+		tmRenderer.dispose();
+		tileMap.dispose();
+	}
 	
 	@Override
-	public void resize(int width, int height) {}
+	public void resize(int width, int height) {} 
 	
 	@Override
 	public void hide() {}

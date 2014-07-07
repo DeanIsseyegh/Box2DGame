@@ -19,18 +19,27 @@ public abstract class B2DSprite implements IEntity {
 	protected Rectangle boundsBox;
 	
 	protected WorldController wc;
-	protected final float gravity = 150;
+	protected final float gravity = 200;
 	
 	public B2DSprite(WorldController wc){
 		this.wc = wc;
 	}
 	
-	/**
-	 * A helper method because I'm lazy to type out new Texture all the time
-	 * 
-	 * @param filePath
-	 * @return Texture
-	 */
+	@Override
+	public float getX() { return pos.x; }
+	
+	@Override
+	public float getY() { return pos.y; }
+	
+	@Override
+	public float getWidth() { return width; }
+
+	@Override
+	public float getHeight() { return height; }
+
+	@Override
+	public Rectangle getBounds() { return boundsBox; }
+	
 	public static Texture makeTexture(String filePath){
 		return new Texture(Gdx.files.internal(filePath));	
 	}
@@ -58,19 +67,4 @@ public abstract class B2DSprite implements IEntity {
 		
 		return aniFrames;
 	}
-	
-	@Override
-	public float getX() { return pos.x; }
-	
-	@Override
-	public float getY() { return pos.y; }
-	
-	@Override
-	public float getWidth() { return width; }
-
-	@Override
-	public float getHeight() { return height; }
-
-	@Override
-	public Rectangle getBounds() { return boundsBox; }
 }
