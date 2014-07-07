@@ -33,9 +33,10 @@ public class CollisionManager {
 	}
 
 	public boolean collidesPlatformBottom(IEntity entity, TiledMapTileLayer mapLayer) {
-		for (float step = 0; step < entity.getWidth(); step += mapLayer.getTileWidth() / 2)
+		for (float step = 0; step < entity.getWidth(); step += mapLayer.getTileWidth() / 2){
 			if (isCellBlocked(entity.getX() + step, entity.getY(), mapLayer))
 				return true;
+		}
 		return false;
 	}
 

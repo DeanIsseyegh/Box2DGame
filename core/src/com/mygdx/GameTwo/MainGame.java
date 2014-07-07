@@ -1,6 +1,7 @@
 package com.mygdx.GameTwo;
 
 import com.badlogic.gdx.Game;
+import com.mygdx.GameTwo.Managers.InputManager;
 import com.mygdx.GameTwo.Managers.WorldController;
 
 public class MainGame extends Game {

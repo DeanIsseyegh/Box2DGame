@@ -35,23 +35,26 @@ public abstract class B2DSprite implements IEntity {
 		return new Texture(Gdx.files.internal(filePath));	
 	}
 	
-	/**
-	 * Will take in a spriteSheet image and return it as an TextureRegion Array which can be animated.
-	 * 
-	 * @param cols - Number of columns in spriteSheet
-	 * @param rows = Number of rows in spriteSheet
-	 * @param spriteSheet - The Texture object containing the spriteSheet
-	 * @return aniFrames - an array of Animation Frames
-	 */
 	public static TextureRegion[] splitSpriteSheetIntoFrames(int cols, int rows, Texture spriteSheet){
+		return split(cols, rows, spriteSheet, false);
+	} 
+	
+	public static TextureRegion[] splitAndFlip(int cols, int rows, Texture spriteSheet){
+		return split(cols, rows, spriteSheet, true);
+	} 
+	
+	public static TextureRegion[] split(int cols, int rows, Texture spriteSheet, boolean shouldFlip){
 		TextureRegion[][] tmpAniFrames = TextureRegion.split(spriteSheet, spriteSheet.getWidth() / cols, spriteSheet.getHeight() / rows);
 		TextureRegion[] aniFrames = new TextureRegion[cols * rows];
 		
 		int index = 0;
-		for (int i = 0; i < rows; i++)
-			for (int j = 0; j < cols; j++)
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
 				aniFrames[index++] = tmpAniFrames[i][j];
-		
+				if (shouldFlip)
+					aniFrames[index - 1].flip(true, false);
+			}
+		}
 		
 		return aniFrames;
 	}

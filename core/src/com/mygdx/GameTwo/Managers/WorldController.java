@@ -8,10 +8,12 @@ public class WorldController {
 	private MainGame mainGame;
 	private CollisionManager collisionManager;
 	private TiledMap tiledMap;
+	private InputManager inputManager;
 
 	public WorldController(MainGame mainGame){
 		this.mainGame = mainGame;
 		collisionManager = new CollisionManager();
+		inputManager = new InputManager();
 	}
 	
 	
@@ -20,5 +22,7 @@ public class WorldController {
 	
 	public TiledMap getTiledMap() { return tiledMap; }
 	public void setTiledMap(TiledMap tiledMap) { this.tiledMap = tiledMap; }
+	
+	public InputManager getInputManager() { return inputManager; }
 
 }

@@ -3,6 +3,8 @@ package com.mygdx.GameTwo.Entities.Player;
 import static com.mygdx.GameTwo.Managers.GlobalVars.PLAYER_IDLE_FILEPATH;
 import static com.mygdx.GameTwo.Managers.GlobalVars.PLAYER_WALKING_FILEPATH;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -27,12 +29,16 @@ public class Player extends B2DSprite implements IEntity {
 	private Texture walkingTexture;
 	
 	private TextureRegion[] idleFrames;
-	private TextureRegion[] walkingFrames;
+	private TextureRegion[] walkingRightFrames;
+	private TextureRegion[] walkingLeftFrames;
 	
 	private Animation idleAnimation;
-	private Animation walkingAnimation;
+	private Animation walkingRightAnimation;
+	private Animation walkingLeftAnimation;
 	
 	private float animationTime;
+	
+	private float speed = 100f;
 	
 	private ShapeRenderer shapeRenderer;
 	
@@ -46,10 +52,13 @@ public class Player extends B2DSprite implements IEntity {
 		walkingTexture = B2DSprite.makeTexture(PLAYER_WALKING_FILEPATH);
 		
 		idleFrames = B2DSprite.splitSpriteSheetIntoFrames(6, 1, idleTexture);
-		walkingFrames = B2DSprite.splitSpriteSheetIntoFrames(8, 2, walkingTexture);
+		walkingRightFrames = B2DSprite.splitSpriteSheetIntoFrames(5, 3, walkingTexture);
+		walkingLeftFrames = B2DSprite.splitAndFlip(5, 3, walkingTexture);
+		ArrayUtils.reverse(walkingLeftFrames);
 		
 		idleAnimation = new Animation(0.2f, idleFrames);
-		walkingAnimation = new Animation(0.2f, walkingFrames);
+		walkingRightAnimation = new Animation(0.2f, walkingRightFrames);
+		walkingLeftAnimation = new Animation(0.2f, walkingLeftFrames);
 		
 		width = idleFrames[0].getRegionWidth();
 		height = idleFrames[0].getRegionHeight();
@@ -58,9 +67,10 @@ public class Player extends B2DSprite implements IEntity {
 		
 		//emulate user jumping
 		vel.y = 150;
+		vel.x = 50;
 		state = PlayerState.JUMPING;
 		
-		debug = true;
+		debug = false;
 		if (debug == true)
 			shapeRenderer = new ShapeRenderer();
 	} 
@@ -72,33 +82,34 @@ public class Player extends B2DSprite implements IEntity {
 		
 		float oldPosX = pos.x;
 		float oldPosY = pos.y;
-		boolean isWalking = false;
 		
 		switch(state){
-		case DEFAULT:
-			if (isWalking)
-				batch.draw(walkingAnimation.getKeyFrame(animationTime, true), pos.x, pos.y);
-			else
-				batch.draw(idleAnimation.getKeyFrame(animationTime, true), pos.x, pos.y);
+		case DEFAULT:	
 			break;
-			
 		case JUMPING:
-			batch.draw(idleAnimation.getKeyFrame(animationTime, true), pos.x, pos.y);
 			vel.y -= gravity * deltaTime; //Make jumping more realistic/smoother emulate gravity
 			if (vel.y <= 0.15f)
 				state = PlayerState.FALLING;
 			break;
-			
 		case FALLING:
-			batch.draw(idleAnimation.getKeyFrame(animationTime, true), pos.x, pos.y);
 			vel.y -= gravity * deltaTime; //Make jumping more realistic/smoother emulate gravity
 		}
 		
-		handlePlatformCollision((TiledMapTileLayer) wc.getTiledMap().getLayers().get("Platforms"), oldPosX, oldPosY);
+		boolean isWalking = vel.x == 0 ? false : true;
+		if (isWalking && wc.getInputManager().shouldGoRight()) {
+			batch.draw(walkingRightAnimation.getKeyFrame(animationTime, true), pos.x, pos.y);
+		} else if (isWalking && wc.getInputManager().shouldGoLeft()) {
+			batch.draw(walkingLeftAnimation.getKeyFrame(animationTime, true), pos.x, pos.y);
+		} else {
+			batch.draw(idleAnimation.getKeyFrame(animationTime, true), pos.x, pos.y);
+		}
 		
-		System.out.println(vel.y * deltaTime);
-		pos.y += vel.y * deltaTime;
+		handleControls();
 		pos.x += vel.x * deltaTime;
+		handlePlatformCollisionX((TiledMapTileLayer) wc.getTiledMap().getLayers().get("Platforms"), oldPosX, oldPosY);
+		pos.y += vel.y * deltaTime;
+		handlePlatformCollisionY((TiledMapTileLayer) wc.getTiledMap().getLayers().get("Platforms"), oldPosX, oldPosY);
+		
 		boundsBox.set(pos.x, pos.y, width, height);
 		
 		// Debug
@@ -108,37 +119,43 @@ public class Player extends B2DSprite implements IEntity {
 	        shapeRenderer.rect(pos.x, pos.y, width, height);
 	        shapeRenderer.end();
 		}
-		
-		//System.out.println(pos.y);
 	}
 	
-	private void handlePlatformCollision(TiledMapTileLayer collisionLayer, float oldPosX, float oldPosY){
+	private void handleControls(){
+		if (wc.getInputManager().shouldGoLeft()){
+			vel.x = -speed;
+		} else if (wc.getInputManager().shouldGoRight()){
+			vel.x = speed;
+		} else if (!wc.getInputManager().shouldGoLeft()
+				|| !wc.getInputManager().shouldGoRight()){
+			vel.x = 0;
+		} 
+	}
+	
+	private void handlePlatformCollisionY(TiledMapTileLayer collisionLayer, float oldPosX, float oldPosY){
 		if (vel.y < 0){ // Going Down
 			if (wc.getCollisionManager().collidesPlatformBottom(this, collisionLayer)){
 				vel.y = 0;
-			//	System.out.println(pos.y);
-				//pos.y = oldPosY;
+				pos.y = oldPosY;
 				state = PlayerState.DEFAULT;
 			}
-		}
-		
-		if (vel.y > 0){ // Going Up
+		} else if (vel.y > 0){ // Going Up
 			if (wc.getCollisionManager().collidesPlatformTop(this, collisionLayer)){
 				vel.y = 0;
 				pos.y = oldPosY;
 				state = PlayerState.DEFAULT;
 			}
 		}
-		
+	}
+	
+	private void handlePlatformCollisionX(TiledMapTileLayer collisionLayer, float oldPosX, float oldPosY){
 		if (vel.x < 0){ // Going Left
 			if (wc.getCollisionManager().collidesPlatformLeft(this, collisionLayer)){
 				vel.x = 0;
 				pos.x = oldPosX;
 				state = PlayerState.DEFAULT;
 			}
-		}
-		
-		if (vel.x > 0){ // Going Right
+		} else if (vel.x > 0){ // Going Right
 			if (wc.getCollisionManager().collidesPlatformRight(this, collisionLayer)){
 				vel.x = 0;
 				pos.x = oldPosX;
