@@ -12,29 +12,29 @@ public class CollisionManager {
 	}
 
 	public boolean collidesPlatformRight(IEntity entity, TiledMapTileLayer mapLayer) {
-		for (float step = 0; step < entity.getHeight(); step += mapLayer.getTileHeight() / 2)
-			if (isCellBlocked(entity.getX() + entity.getWidth(), entity.getY() + step, mapLayer))
+		for (float step = 0; step < entity.getBounds().getHeight(); step += mapLayer.getTileHeight() / 2)
+			if (isCellBlocked(entity.getBounds().getX() + entity.getBounds().getWidth(), entity.getBounds().getY() + step, mapLayer))
 				return true;
 		return false;
 	}
 
 	public boolean collidesPlatformLeft(IEntity entity, TiledMapTileLayer mapLayer) {
-		for (float step = 0; step < entity.getHeight(); step += mapLayer.getTileHeight() / 2)
-			if (isCellBlocked(entity.getX(), entity.getY() + step, mapLayer))
+		for (float step = 0; step < entity.getBounds().getHeight(); step += mapLayer.getTileHeight() / 2)
+			if (isCellBlocked(entity.getBounds().getX(), entity.getBounds().getY() + step, mapLayer))
 				return true;
 		return false;
 	}
 
 	public boolean collidesPlatformTop(IEntity entity, TiledMapTileLayer mapLayer) {
-		for (float step = 0; step < entity.getWidth(); step += mapLayer.getTileWidth() / 2)
-			if (isCellBlocked(entity.getX() + step, entity.getY() + entity.getHeight(), mapLayer))
+		for (float step = 0; step < entity.getBounds().getWidth(); step += mapLayer.getTileWidth() / 2)
+			if (isCellBlocked(entity.getBounds().getX() + step, entity.getBounds().getY() + entity.getHeight(), mapLayer))
 				return true;
 		return false;
 	}
 
 	public boolean collidesPlatformBottom(IEntity entity, TiledMapTileLayer mapLayer) {
-		for (float step = 0; step < entity.getWidth(); step += mapLayer.getTileWidth() / 2){
-			if (isCellBlocked(entity.getX() + step, entity.getY(), mapLayer))
+		for (float step = 0; step < entity.getBounds().getWidth(); step += mapLayer.getTileWidth() / 2){
+			if (isCellBlocked(entity.getBounds().getX() + step, entity.getBounds().getY(), mapLayer))
 				return true;
 		}
 		return false;

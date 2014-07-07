@@ -76,14 +76,13 @@ public class Player extends B2DSprite implements IEntity {
 		walkingLeftAnimation = new Animation(0.2f, walkingLeftFrames);
 		previousAnimation = walkingRightAnimation;
 		
-		collisionWidth = 40;
+		collisionWidth = 53;
 		collisionHeight = 23;
 		offsetX = 20;
 		width = idleRightFrames[0].getRegionWidth() - collisionWidth;
 		height = idleRightFrames[0].getRegionHeight() - collisionHeight;
-		pos.x += offsetX;
 		
-		boundsBox = new Rectangle(pos.x, pos.y, width, height);
+		boundsBox = new Rectangle();
 		
 		//emulate user jumping
 		state = PlayerState.DEFAULT;
@@ -97,6 +96,8 @@ public class Player extends B2DSprite implements IEntity {
 	public void update(float deltaTime, SpriteBatch batch) {
 		time += deltaTime;
 		animationTime += deltaTime;
+		System.out.println("width : " + boundsBox.getWidth());
+		System.out.println("height : " + boundsBox.getHeight());
 		
 		float oldPosX = pos.x;
 		float oldPosY = pos.y;
@@ -114,11 +115,13 @@ public class Player extends B2DSprite implements IEntity {
 		renderDebug();
 		handleControls();
 		pos.x += vel.x * deltaTime;
+		boundsBox.set(pos.x + offsetX, pos.y + offsetY, width, height);
 		handlePlatformCollisionX((TiledMapTileLayer) wc.getTiledMap().getLayers().get("Platforms"), oldPosX, oldPosY);
 		pos.y += vel.y * deltaTime;
+		boundsBox.set(pos.x + offsetX, pos.y + offsetY, width, height);
 		handlePlatformCollisionY((TiledMapTileLayer) wc.getTiledMap().getLayers().get("Platforms"), oldPosX, oldPosY);
-		boundsBox.set(pos.x, pos.y, width, height);
 		
+		wc.getCameraHelper().followPlayer(oldPosX, oldPosY, boundsBox.getX(), boundsBox.getY());
 	}
 	
 	private void applyGravity(float deltaTime){
@@ -203,7 +206,7 @@ public class Player extends B2DSprite implements IEntity {
 		if (debug == true){
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.RED);
-			shapeRenderer.rect(pos.x, pos.y, width, height);
+			shapeRenderer.rect(boundsBox.getX(), boundsBox.getY(), width, height);
 			shapeRenderer.end();
 		}
 	}

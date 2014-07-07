@@ -9,6 +9,7 @@ public class WorldController {
 	private CollisionManager collisionManager;
 	private TiledMap tiledMap;
 	private InputManager inputManager;
+	private CameraHelper cameraHelper;
 
 	public WorldController(MainGame mainGame){
 		this.mainGame = mainGame;
@@ -24,5 +25,10 @@ public class WorldController {
 	public void setTiledMap(TiledMap tiledMap) { this.tiledMap = tiledMap; }
 	
 	public InputManager getInputManager() { return inputManager; }
+	
 
+	public CameraHelper getCameraHelper() { return cameraHelper; }
+
+
+	public void setCameraHelper(CameraHelper cameraHelper) { this.cameraHelper = cameraHelper; }
 }

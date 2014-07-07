@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.GameTwo.Entities.Player.Player;
+import com.mygdx.GameTwo.Managers.CameraHelper;
 import com.mygdx.GameTwo.Managers.CollisionManager;
 import com.mygdx.GameTwo.Managers.WorldController;
 
@@ -21,6 +22,7 @@ public class GameLevel implements Screen {
 	private OrthographicCamera cam;
 	
 	private CollisionManager collisionManager;
+	private CameraHelper camHelper;
 	
 	private TiledMap tileMap;
 	private OrthogonalTiledMapRenderer tmRenderer;
@@ -37,6 +39,8 @@ public class GameLevel implements Screen {
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera();
 		cam.setToOrtho(false, MainGame.V_WIDTH,  MainGame.V_HEIGHT);
+		camHelper = new CameraHelper(cam, wc);
+		wc.setCameraHelper(camHelper);
 		wc.getInputManager().setControls();
 		
 		initPlayer();
