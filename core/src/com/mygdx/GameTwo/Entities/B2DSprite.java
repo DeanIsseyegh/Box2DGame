@@ -19,6 +19,7 @@ public abstract class B2DSprite implements IEntity {
 	protected Rectangle boundsBox;
 	
 	protected WorldController wc;
+	protected final float gravity = 100;
 	
 	public B2DSprite(WorldController wc){
 		this.wc = wc;

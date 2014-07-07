@@ -57,7 +57,7 @@ public class Player extends B2DSprite implements IEntity {
 		boundsBox = new Rectangle(pos.x, pos.y, width, height);
 		
 		//emulate user jumping
-		vel.y = 250;
+		vel.y = 150;
 		state = PlayerState.JUMPING;
 		
 		debug = true;
@@ -84,18 +84,19 @@ public class Player extends B2DSprite implements IEntity {
 			
 		case JUMPING:
 			batch.draw(idleAnimation.getKeyFrame(animationTime, true), pos.x, pos.y);
-			vel.y -= 300 * deltaTime; //Make jumping more realistic/smoother emulate gravity
+			vel.y -= gravity * deltaTime; //Make jumping more realistic/smoother emulate gravity
 			if (vel.y <= 0.15f)
 				state = PlayerState.FALLING;
 			break;
 			
 		case FALLING:
 			batch.draw(idleAnimation.getKeyFrame(animationTime, true), pos.x, pos.y);
-			vel.y -= 300 * deltaTime; //Make jumping more realistic/smoother emulate gravity
+			vel.y -= gravity * deltaTime; //Make jumping more realistic/smoother emulate gravity
 		}
 		
 		handlePlatformCollision((TiledMapTileLayer) wc.getTiledMap().getLayers().get("Platforms"), oldPosX, oldPosY);
 		
+		System.out.println(vel.y * deltaTime);
 		pos.y += vel.y * deltaTime;
 		pos.x += vel.x * deltaTime;
 		boundsBox.set(pos.x, pos.y, width, height);
@@ -107,13 +108,16 @@ public class Player extends B2DSprite implements IEntity {
 	        shapeRenderer.rect(pos.x, pos.y, width, height);
 	        shapeRenderer.end();
 		}
+		
+		//System.out.println(pos.y);
 	}
 	
 	private void handlePlatformCollision(TiledMapTileLayer collisionLayer, float oldPosX, float oldPosY){
 		if (vel.y < 0){ // Going Down
 			if (wc.getCollisionManager().collidesPlatformBottom(this, collisionLayer)){
 				vel.y = 0;
-				pos.y = oldPosY;
+			//	System.out.println(pos.y);
+				//pos.y = oldPosY;
 				state = PlayerState.DEFAULT;
 			}
 		}

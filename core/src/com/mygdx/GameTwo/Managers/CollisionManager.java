@@ -44,6 +44,7 @@ public class CollisionManager {
 
 		// Check if current position is in collidable tile
 		Cell cell = mapLayer.getCell((int) (xPos / mapLayer.getTileWidth()), (int) (yPos / mapLayer.getTileHeight()));
+		
 		if ( cell != null && cell.getTile() != null )
 			isCollision = true;
 		
