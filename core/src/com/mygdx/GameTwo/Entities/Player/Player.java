@@ -38,7 +38,8 @@ public class Player extends B2DSprite implements IEntity {
 	
 	private float animationTime;
 	
-	private float speed = 100f;
+	private float xSpeed = 100f;
+	private float ySpeed = 150f;
 	
 	private ShapeRenderer shapeRenderer;
 	
@@ -66,8 +67,6 @@ public class Player extends B2DSprite implements IEntity {
 		boundsBox = new Rectangle(pos.x, pos.y, width, height);
 		
 		//emulate user jumping
-		vel.y = 150;
-		vel.x = 50;
 		state = PlayerState.JUMPING;
 		
 		debug = false;
@@ -122,10 +121,17 @@ public class Player extends B2DSprite implements IEntity {
 	}
 	
 	private void handleControls(){
+		// Handle Y movement
+		if (wc.getInputManager().shouldGoJump() && (state != PlayerState.JUMPING && state != PlayerState.FALLING)){
+			vel.y = ySpeed;
+			state = PlayerState.JUMPING;
+		}
+		
+		// Handle X movement
 		if (wc.getInputManager().shouldGoLeft()){
-			vel.x = -speed;
+			vel.x = -xSpeed;
 		} else if (wc.getInputManager().shouldGoRight()){
-			vel.x = speed;
+			vel.x = xSpeed;
 		} else if (!wc.getInputManager().shouldGoLeft()
 				|| !wc.getInputManager().shouldGoRight()){
 			vel.x = 0;

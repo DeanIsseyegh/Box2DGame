@@ -8,16 +8,8 @@ import com.badlogic.gdx.InputProcessor;
 public class InputManager {
 	
 	private boolean goRight = false;
-
 	private boolean goLeft = false;
-	
-	public boolean shouldGoRight(){
-		return goRight;
-	}
-	
-	public boolean shouldGoLeft(){
-		return goLeft;
-	}
+	private boolean goJump = false;
 	
 	public void setControls(){
 		ApplicationType platform = Gdx.app.getType();
@@ -31,11 +23,13 @@ public class InputManager {
 	}
 	
 
-	public boolean isGoRight() { return goRight; }
+	public boolean shouldGoRight(){ return goRight; }
+	public boolean shouldGoLeft(){ return goLeft; }
+	public boolean shouldGoJump(){ return goJump; }
+	
 	public void setGoRight(boolean goRight) { this.goRight = goRight; }
-
-	public boolean isGoLeft() { return goLeft; }
 	public void setGoLeft(boolean goLeft) { this.goLeft = goLeft; }
+	public void setGoJump(boolean goJump) { this.goJump = goJump; }
 	
 	class DesktopControls implements InputProcessor {
 		
@@ -47,34 +41,32 @@ public class InputManager {
 		
 		@Override
 		public boolean keyDown(int keycode) {
-			switch (keycode){
-			case Keys.A:
-			case Keys.LEFT:
-				inputManager.setGoLeft(true);
-				break;
-			case Keys.D:
-			case Keys.RIGHT:
-				inputManager.setGoRight(true);
-				break;
-			}
+			handleKeys(keycode, true);
 			return true;
 		}
 
 		@Override
 		public boolean keyUp(int keycode) {
+			handleKeys(keycode, false);
+			return true;
+		}
+		
+		private void handleKeys(int keycode, boolean shouldDo){
 			switch (keycode){
 			case Keys.A:
 			case Keys.LEFT:
-				inputManager.setGoLeft(false);
+				inputManager.setGoLeft(shouldDo);
 				break;
 			case Keys.D:
 			case Keys.RIGHT:
-				inputManager.setGoRight(false);
+				inputManager.setGoRight(shouldDo);
+				break;
+			case Keys.SPACE:
+			case Keys.UP:
+				inputManager.setGoJump(shouldDo);
 				break;
 			}
-			return true;
 		}
-
 		@Override
 		public boolean keyTyped(char character) {
 			// TODO Auto-generated method stub
