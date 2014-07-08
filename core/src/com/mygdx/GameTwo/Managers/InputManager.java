@@ -62,6 +62,7 @@ public class InputManager {
 				inputManager.setGoRight(shouldDo);
 				break;
 			case Keys.SPACE:
+			case Keys.W:
 			case Keys.UP:
 				inputManager.setGoJump(shouldDo);
 				break;

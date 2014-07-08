@@ -43,8 +43,8 @@ public class GameLevel implements Screen {
 		wc.setCameraHelper(camHelper);
 		wc.getInputManager().setControls();
 		
-		initPlayer();
 		loadMap();
+		initPlayer();
 	}
 
 	@Override
@@ -59,6 +59,7 @@ public class GameLevel implements Screen {
 		
 		collisionManager.handle();
 		
+		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 		player.update(deltaTime, batch);
 		batch.end();

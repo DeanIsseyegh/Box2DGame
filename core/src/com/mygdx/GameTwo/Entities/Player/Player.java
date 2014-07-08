@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.GameTwo.MainGame;
 import com.mygdx.GameTwo.Entities.B2DSprite;
 import com.mygdx.GameTwo.Entities.IEntity;
 import com.mygdx.GameTwo.Managers.WorldController;
@@ -49,7 +50,10 @@ public class Player extends B2DSprite implements IEntity {
 	private float walkingSpeed;
 	private float jumpSpeed;
 	
-	boolean isTouchingFloor;
+	private boolean isTouchingFloor;
+	
+	private float tileHeight;
+	private TiledMapTileLayer mapLayer;
 	
 	private ShapeRenderer shapeRenderer;
 	
@@ -59,7 +63,7 @@ public class Player extends B2DSprite implements IEntity {
 		pos = startPos;
 		vel = new Vector2();
 		walkingSpeed = 100f;
-		jumpSpeed = 150f;
+		jumpSpeed = 300f;
 		
 		idleTexture = B2DSprite.makeTexture(PLAYER_IDLE_FILEPATH);
 		walkingTexture = B2DSprite.makeTexture(PLAYER_WALKING_FILEPATH);
@@ -87,6 +91,9 @@ public class Player extends B2DSprite implements IEntity {
 		//emulate user jumping
 		state = PlayerState.DEFAULT;
 		
+		mapLayer = (TiledMapTileLayer) wc.getTiledMap().getLayers().get("Platforms");
+		tileHeight = mapLayer.getTileHeight();
+		
 		debug = false;
 		if (debug == true)
 			shapeRenderer = new ShapeRenderer();
@@ -96,8 +103,6 @@ public class Player extends B2DSprite implements IEntity {
 	public void update(float deltaTime, SpriteBatch batch) {
 		time += deltaTime;
 		animationTime += deltaTime;
-		System.out.println("width : " + boundsBox.getWidth());
-		System.out.println("height : " + boundsBox.getHeight());
 		
 		float oldPosX = pos.x;
 		float oldPosY = pos.y;
@@ -116,12 +121,11 @@ public class Player extends B2DSprite implements IEntity {
 		handleControls();
 		pos.x += vel.x * deltaTime;
 		boundsBox.set(pos.x + offsetX, pos.y + offsetY, width, height);
-		handlePlatformCollisionX((TiledMapTileLayer) wc.getTiledMap().getLayers().get("Platforms"), oldPosX, oldPosY);
+		handlePlatformCollisionX(mapLayer, oldPosX, oldPosY);
 		pos.y += vel.y * deltaTime;
 		boundsBox.set(pos.x + offsetX, pos.y + offsetY, width, height);
-		handlePlatformCollisionY((TiledMapTileLayer) wc.getTiledMap().getLayers().get("Platforms"), oldPosX, oldPosY);
-		
-		wc.getCameraHelper().followPlayer(oldPosX, oldPosY, boundsBox.getX(), boundsBox.getY());
+		handlePlatformCollisionY(mapLayer, oldPosX, oldPosY);
+		wc.getCameraHelper().followPlayer(pos.x - MainGame.V_WIDTH/2 + width , pos.y - tileHeight);
 	}
 	
 	private void applyGravity(float deltaTime){

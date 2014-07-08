@@ -1,6 +1,7 @@
 package com.mygdx.GameTwo.Managers;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.mygdx.GameTwo.MainGame;
 
 public class CameraHelper {
 
@@ -16,8 +17,8 @@ public class CameraHelper {
 		
 	}
 
-	public void followPlayer(float oldPosX, float oldPosY, float x, float y) {
-		cam.translate(x - oldPosX, y - oldPosY);
+	public void followPlayer(float x, float y) {
+		cam.position.set(x + MainGame.V_WIDTH / 2, y + MainGame.V_HEIGHT / 2, 0);
 	}
 	
 }
