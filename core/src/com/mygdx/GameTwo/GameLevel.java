@@ -75,7 +75,7 @@ public class GameLevel implements Screen {
 	}
 	
 	private void initPlayer() {
-		Vector2 startPos = new Vector2(100, 100);
+		Vector2 startPos = new Vector2(100, 300);
 		player = new Player(startPos, wc);
 	}
 	

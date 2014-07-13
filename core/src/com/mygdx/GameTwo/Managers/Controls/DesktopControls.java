@@ -42,6 +42,9 @@ public class DesktopControls implements InputProcessor {
 		case Keys.CONTROL_LEFT:
 			inputManager.setGoShoot(shouldDo);
 			break;
+		case Keys.C:
+			inputManager.setGoSlash(shouldDo);
+			break;
 		}
 	}
 
@@ -60,7 +63,7 @@ public class DesktopControls implements InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		handleMouse(button, false);
-		return false;
+		return true;
 	}
 	
 	private void handleMouse(int button, boolean shouldDo){

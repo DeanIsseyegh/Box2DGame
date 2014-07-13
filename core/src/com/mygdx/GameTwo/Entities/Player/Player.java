@@ -1,17 +1,8 @@
 package com.mygdx.GameTwo.Entities.Player;
 
-import static com.mygdx.GameTwo.Managers.GlobalVars.PLAYER_IDLE_FILEPATH;
-import static com.mygdx.GameTwo.Managers.GlobalVars.PLAYER_SHOOTING_FILEPATH;
-import static com.mygdx.GameTwo.Managers.GlobalVars.PLAYER_WALKING_FILEPATH;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.GameTwo.GameLevel;
@@ -31,16 +22,7 @@ public class Player extends AbstractEntity implements IEntity {
 	private float collisionWidth;
 	private float collisionHeight;
 	
-	private Texture idleTexture;
-	private Texture walkingTexture;
-	private Texture shootingTexture;
-	
-	private TextureRegion[] idleRightFrames;
-	private TextureRegion[] idleLeftFrames;
-	private TextureRegion[] walkingRightFrames;
-	private TextureRegion[] walkingLeftFrames;
-	private TextureRegion[] shootingRightFrames;
-	private TextureRegion[] shootingLeftFrames;
+	private PlayerAnimations playerAnimations;
 	
 	private Animation idleRightAnimation;
 	private Animation idleLeftAnimation;
@@ -48,13 +30,22 @@ public class Player extends AbstractEntity implements IEntity {
 	private Animation walkingLeftAnimation;
 	private Animation shootingRightAnimation;
 	private Animation shootingLeftAnimation;
+	private Animation slashingRightAnimation;
+	private Animation slashingLeftAnimation;
 	
 	private boolean isPlayerFacingRight;
 	private float animationTime;
+	
 	private float shootingAnimationTime;
 	private float timeSinceLastShot;
 	private float maxNumOfShotsPerSec;
+	private boolean hasShot;
 	private Array<IBullet> playerBullets;
+	
+	private float slashingAnimationTime;
+	private float timeSinceLastSlash;
+	private float maxNumOfSlashPerSec;
+	private boolean hasSlashed;
 	
 	private float walkingSpeed;
 	private float jumpSpeed;
@@ -68,48 +59,38 @@ public class Player extends AbstractEntity implements IEntity {
 	public Player(Vector2 startPos, WorldController wc) {
 		super(wc);
 		
+		playerAnimations = new PlayerAnimations();
 		pos = startPos;
 		vel = new Vector2();
 		initAnimations();
-		
+		isPlayerFacingRight = true;
 		collisionWidth = 53;
 		collisionHeight = 23;
 		offsetX = 20;
-		width = idleRightFrames[0].getRegionWidth() - collisionWidth;
-		height = idleRightFrames[0].getRegionHeight() - collisionHeight;
+		width = playerAnimations.getRegionWidth() - collisionWidth;
+		height = playerAnimations.getRegionHeight() - collisionHeight;
 	
 		mapLayer = (TiledMapTileLayer) wc.getTiledMap().getLayers().get("Platforms");
 		tileHeight = mapLayer.getTileHeight();
 		
 		state = PlayerState.DEFAULT;
 		maxNumOfShotsPerSec = 1.5f;
+		maxNumOfSlashPerSec = 1.5f;
 		blueBulletSpeed = 5f;
 		playerBullets = new Array<IBullet>();
-		walkingSpeed = 150f;
-		jumpSpeed = 200f;
+		walkingSpeed = 200f;
+		jumpSpeed = 350f;
 	} 
 	
 	private void initAnimations(){
-		animationSpeed = 0.15f;
-		
-		idleTexture = AbstractEntity.makeTexture(PLAYER_IDLE_FILEPATH);
-		walkingTexture = AbstractEntity.makeTexture(PLAYER_WALKING_FILEPATH);
-		shootingTexture = AbstractEntity.makeTexture(PLAYER_SHOOTING_FILEPATH);
-		
-		idleRightFrames = AbstractEntity.splitSpriteSheetIntoFrames(6, 1, idleTexture);
-		idleLeftFrames = AbstractEntity.splitAndFlip(6, 1, idleTexture);
-		walkingRightFrames = AbstractEntity.splitSpriteSheetIntoFrames(5, 3, walkingTexture);
-		walkingLeftFrames = AbstractEntity.splitAndFlip(5, 3, walkingTexture);
-		shootingRightFrames = AbstractEntity.splitSpriteSheetIntoFrames(6, 1, shootingTexture);
-		shootingLeftFrames = AbstractEntity.splitAndFlip(6, 1, shootingTexture);
-		
-		idleRightAnimation = new Animation(animationSpeed, idleRightFrames);
-		idleLeftAnimation = new Animation(animationSpeed, idleLeftFrames);
-		walkingRightAnimation = new Animation(animationSpeed, walkingRightFrames);
-		walkingLeftAnimation = new Animation(animationSpeed, walkingLeftFrames);
-		shootingRightAnimation = new Animation(animationSpeed, shootingRightFrames);
-		shootingLeftAnimation = new Animation(animationSpeed, shootingLeftFrames);
-		isPlayerFacingRight = true;
+		idleRightAnimation = playerAnimations.getIdleRightAnimation();
+		idleLeftAnimation = playerAnimations.getIdleLeftAnimation();
+		walkingRightAnimation =  playerAnimations.getWalkingRightAnimation();
+		walkingLeftAnimation =  playerAnimations.getWalkingLeftAnimation();
+		shootingRightAnimation =  playerAnimations.getShootingRightAnimation();
+		shootingLeftAnimation =  playerAnimations.getShootingLeftAnimation();
+		slashingRightAnimation =  playerAnimations.getSlashingRightAnimation();
+		slashingLeftAnimation =  playerAnimations.getSlashingLeftAnimation();
 	}
 	
 	@Override
@@ -117,6 +98,7 @@ public class Player extends AbstractEntity implements IEntity {
 		time += deltaTime;
 		animationTime += deltaTime;
 		timeSinceLastShot += deltaTime;
+		timeSinceLastSlash += deltaTime;
 		
 		float oldPosX = pos.x;
 		float oldPosY = pos.y;
@@ -125,34 +107,22 @@ public class Player extends AbstractEntity implements IEntity {
 		
 		switch(state){
 		case WALKING_SHOOTING:
-			shootingAnimationTime += deltaTime;
-			if (shootingAnimationTime > 0.3f){
-				state = PlayerState.DEFAULT;
-				shootingAnimationTime = 0;
-				timeSinceLastShot = 0;
-				shootBlueBullet();
-			}
+			handleShootingState(PlayerState.DEFAULT, deltaTime);
 		case DEFAULT:	
 			break;
 		case JUMPING_SHOOTING:
-			shootingAnimationTime += deltaTime;
-			if (shootingAnimationTime > 0.3f){
-				state = PlayerState.JUMPING;
-				shootingAnimationTime = 0;
-				timeSinceLastShot = 0;
-				shootBlueBullet();
-			}
+			handleShootingState(PlayerState.JUMPING, deltaTime);
 		case JUMPING:
 			if (vel.y <= 0)
 				state = PlayerState.DEFAULT;
 			break;
+		case WALKING_SLASHING:
+			handleSlashingState(PlayerState.DEFAULT, deltaTime);
+			break;
+		case JUMPING_SLASHING:
+			handleSlashingState(PlayerState.JUMPING, deltaTime);
+			break;
 		default:
-			try {
-				throw new Exception("Player in invalid state");
-			} catch (Exception e) {
-				e.printStackTrace();
-				Gdx.app.exit();
-			}
 			break;
 		}
 		
@@ -166,9 +136,36 @@ public class Player extends AbstractEntity implements IEntity {
 		pos.y += vel.y * deltaTime;
 		boundsBox.set(pos.x + offsetX, pos.y + offsetY, width, height);
 		handlePlatformCollisionY(mapLayer, oldPosX, oldPosY);
-		wc.getCameraHelper().followPlayer(pos.x - GameLevel.WIDTH/2 + width , pos.y - tileHeight);
+		wc.getCameraHelper().followPlayer(pos.x - GameLevel.WIDTH/2 + width , pos.y - tileHeight * 2);
 		
 		renderBullets(deltaTime, batch);
+	}
+	
+	private void handleSlashingState(PlayerState postState, float deltaTime){
+		slashingAnimationTime += deltaTime;
+		if (!hasSlashed){
+			hasSlashed = true;
+		}
+		if (slashingAnimationTime > 0.75f){
+			state = postState;
+			slashingAnimationTime = 0;
+			timeSinceLastSlash = 0;
+			hasSlashed = false;
+		}
+	}
+	
+	private void handleShootingState(PlayerState postState, float deltaTime){
+		shootingAnimationTime += deltaTime;
+		if (!hasShot){
+			shootBlueBullet();
+			hasShot = true;
+		}
+		if (shootingAnimationTime > 0.3f){
+			state = postState;
+			shootingAnimationTime = 0;
+			timeSinceLastShot = 0;
+			hasShot = false;
+		}
 	}
 	
 	private void shootBlueBullet(){
@@ -195,8 +192,14 @@ public class Player extends AbstractEntity implements IEntity {
 	
 	private void drawPlayer(SpriteBatch batch){
 		boolean isWalking = vel.x == 0 ? false : true;
-
-		if (shouldShootRightAnimation()) {
+		
+		if (shouldSlashRightAnimation()) {
+			batch.draw(slashingRightAnimation.getKeyFrame(slashingAnimationTime + 0.3f, true), pos.x, pos.y);
+			isPlayerFacingRight = true;
+		} else if (shouldSlashLeftAnimation()){
+			batch.draw(slashingLeftAnimation.getKeyFrame(slashingAnimationTime + 0.3f, true), pos.x - offsetX, pos.y);
+			isPlayerFacingRight = false;
+		} else if (shouldShootRightAnimation()) {
 			batch.draw(shootingRightAnimation.getKeyFrame(animationTime, false), pos.x, pos.y);
 			isPlayerFacingRight = true;
 		} else if (shouldShootLeftAnimation()) {
@@ -236,6 +239,28 @@ public class Player extends AbstractEntity implements IEntity {
 		return (state == PlayerState.JUMPING_SHOOTING) || state == PlayerState.WALKING_SHOOTING;
 	}
 	
+	private boolean isPlayerStateSlashing(){
+		return (state == PlayerState.JUMPING_SLASHING) || state == PlayerState.WALKING_SLASHING;
+	}
+	
+	private boolean shouldSlashRightAnimation(){
+		if ((isPlayerStateSlashing() && isMovingRight())
+			|| (isPlayerStateSlashing() && (isNotMoving() && isPlayerFacingRight == true))){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	private boolean shouldSlashLeftAnimation(){
+		if ((isPlayerStateSlashing() && isMovingLeft())
+		|| (isPlayerStateSlashing() && (isNotMoving() && isPlayerFacingRight == false))){
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	private boolean shouldShootRightAnimation(){
 		if ((isPlayerStateShooting() && isMovingRight())
 			|| (isPlayerStateShooting() && (isNotMoving() && isPlayerFacingRight == true))){
@@ -272,12 +297,20 @@ public class Player extends AbstractEntity implements IEntity {
 		}
 		
 		// Handle Shooting
-		if (timeSinceLastShot > maxNumOfShotsPerSec){
+		if (timeSinceLastShot > maxNumOfShotsPerSec && !isPlayerStateSlashing()){
 			if (wc.getInputManager().shouldGoShoot() && state == PlayerState.JUMPING){
 				state = PlayerState.JUMPING_SHOOTING;
 			} else if (wc.getInputManager().shouldGoShoot()){
 				state = PlayerState.WALKING_SHOOTING;
 			}
+		}
+		
+		// Handle Slashing
+		if (timeSinceLastSlash > maxNumOfSlashPerSec && !isPlayerStateShooting()){
+			if (wc.getInputManager().shouldGoSlash() && state == PlayerState.JUMPING){
+				state = PlayerState.JUMPING_SLASHING;
+			} else if (wc.getInputManager().shouldGoSlash())
+				state = PlayerState.WALKING_SLASHING;
 		}
 	}
 	
@@ -320,9 +353,7 @@ public class Player extends AbstractEntity implements IEntity {
 	
 	@Override
 	public void dispose() {
-		idleTexture.dispose();
-		walkingTexture.dispose();
-		shootingTexture.dispose();
+		playerAnimations.dispose();
 	}
 	
 	public enum PlayerState {
@@ -330,7 +361,9 @@ public class Player extends AbstractEntity implements IEntity {
 		IDLE,
 		JUMPING,
 		JUMPING_SHOOTING,
-		WALKING_SHOOTING;
+		WALKING_SHOOTING,
+		JUMPING_SLASHING,
+		WALKING_SLASHING;
 	}
 
 }
