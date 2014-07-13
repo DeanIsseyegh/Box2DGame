@@ -16,6 +16,9 @@ import com.mygdx.GameTwo.Managers.WorldController;
 
 public class GameLevel implements Screen {
 	private static final String TAG = GameLevel.class.getName();
+	static final int SCALE = 2;
+	public static final int WIDTH  = 480 * SCALE;
+    public static final int HEIGHT = 320 * SCALE;
 	
 	private WorldController wc;
 	private SpriteBatch batch;
@@ -38,7 +41,7 @@ public class GameLevel implements Screen {
 		collisionManager = wc.getCollisionManager();
 		batch = new SpriteBatch();
 		cam = new OrthographicCamera();
-		cam.setToOrtho(false, MainGame.V_WIDTH,  MainGame.V_HEIGHT);
+		cam.setToOrtho(false, WIDTH, HEIGHT);
 		camHelper = new CameraHelper(cam, wc);
 		wc.setCameraHelper(camHelper);
 		wc.getInputManager().setControls();
@@ -51,18 +54,24 @@ public class GameLevel implements Screen {
 	public void render(float deltaTime) {
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+		deltaTime = clampDeltaTime(deltaTime);
 		cam.update();
+		batch.setProjectionMatrix(cam.combined);
 		
 		tmRenderer.setView(cam);
 		tmRenderer.render();
 		
 		collisionManager.handle();
 		
-		batch.setProjectionMatrix(cam.combined);
 		batch.begin();
 		player.update(deltaTime, batch);
 		batch.end();
+	}
+	
+	private float clampDeltaTime(float deltaTime){
+		float max = 1 / 25f;
+		deltaTime = deltaTime > max ? max : deltaTime;
+		return deltaTime;
 	}
 	
 	private void initPlayer() {
@@ -86,7 +95,9 @@ public class GameLevel implements Screen {
 	}
 	
 	@Override
-	public void resize(int width, int height) {} 
+	public void resize(int width, int height) {
+
+	} 
 	
 	@Override
 	public void hide() {}

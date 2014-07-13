@@ -7,9 +7,10 @@ import com.mygdx.GameTwo.MainGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
-		cfg.title = MainGame.TITLE;
-		cfg.width = MainGame.V_WIDTH;
-		cfg.height = MainGame.V_HEIGHT;
+		final int SCALE = 2;
+		cfg.title = "The Defender";
+		cfg.width = 480 * SCALE;
+		cfg.height = 320 * SCALE;
 		new LwjglApplication(new MainGame(), cfg);
 	}
 }

@@ -2,15 +2,34 @@ package com.mygdx.GameTwo.Managers;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.GameTwo.Entities.IEntity;
-import com.sun.xml.internal.stream.Entity;
+import com.mygdx.GameTwo.Entities.Bullets.IBullet;
 
 public class CollisionManager {
 
+	private Array<IBullet> playerBullets;
+	
+	public CollisionManager(){
+		playerBullets = new Array<IBullet>();
+	}
+	
 	public void handle() {
-
+		// Handle player bullet hitting enemy
+		
+		removeUneededObjects();
 	}
 
+	private void removeUneededObjects(){
+		// Psuedo code
+		// If bullet position is more than width of map then remove from array and dipose it.
+	}
+	
+	public void hookPlayerBullet(IBullet bullet){
+		playerBullets.add(bullet);
+	}
+	
+	// Player platform collisions
 	public boolean collidesPlatformRight(IEntity entity, TiledMapTileLayer mapLayer) {
 		for (float step = 0; step < entity.getBounds().getHeight(); step += mapLayer.getTileHeight() / 2)
 			if (isCellBlocked(entity.getBounds().getX() + entity.getBounds().getWidth(), entity.getBounds().getY() + step, mapLayer))

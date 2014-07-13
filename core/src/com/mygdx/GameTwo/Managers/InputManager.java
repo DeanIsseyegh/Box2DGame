@@ -2,14 +2,17 @@ package com.mygdx.GameTwo.Managers;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.input.GestureDetector;
+import com.mygdx.GameTwo.Managers.Controls.AndroidControls;
+import com.mygdx.GameTwo.Managers.Controls.DesktopControls;
 
 public class InputManager {
 	
 	private boolean goRight = false;
 	private boolean goLeft = false;
 	private boolean goJump = false;
+	private boolean goShoot = false;
+	private boolean goSlash = false;
 	
 	public void setControls(){
 		ApplicationType platform = Gdx.app.getType();
@@ -18,91 +21,29 @@ public class InputManager {
 			Gdx.input.setInputProcessor(new DesktopControls(this));
 			break;
 		case Android:
+			Gdx.input.setInputProcessor(new GestureDetector(new AndroidControls(this))); 
+			break;
+		default:
+			try {
+				throw new Exception("Unrecongized platform");
+			} catch (Exception e) {
+				e.printStackTrace();
+				Gdx.app.exit();
+			}
 			break;
 		}
 	}
-	
 
 	public boolean shouldGoRight(){ return goRight; }
 	public boolean shouldGoLeft(){ return goLeft; }
 	public boolean shouldGoJump(){ return goJump; }
+	public boolean shouldGoShoot(){ return goShoot; }
+	public boolean shouldGoSlash(){ return goSlash; }
 	
 	public void setGoRight(boolean goRight) { this.goRight = goRight; }
 	public void setGoLeft(boolean goLeft) { this.goLeft = goLeft; }
 	public void setGoJump(boolean goJump) { this.goJump = goJump; }
+	public void setGoShoot(boolean goShoot){ this.goShoot = goShoot; }
+	public void setGoSlash(boolean goSlash) { this.goSlash = goSlash; }
 	
-	class DesktopControls implements InputProcessor {
-		
-		private InputManager inputManager;
-		
-		public DesktopControls(InputManager inputManager){
-			this.inputManager = inputManager;
-		}
-		
-		@Override
-		public boolean keyDown(int keycode) {
-			handleKeys(keycode, true);
-			return true;
-		}
-
-		@Override
-		public boolean keyUp(int keycode) {
-			handleKeys(keycode, false);
-			return true;
-		}
-		
-		private void handleKeys(int keycode, boolean shouldDo){
-			switch (keycode){
-			case Keys.A:
-			case Keys.LEFT:
-				inputManager.setGoLeft(shouldDo);
-				break;
-			case Keys.D:
-			case Keys.RIGHT:
-				inputManager.setGoRight(shouldDo);
-				break;
-			case Keys.SPACE:
-			case Keys.W:
-			case Keys.UP:
-				inputManager.setGoJump(shouldDo);
-				break;
-			}
-		}
-		@Override
-		public boolean keyTyped(char character) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean touchDragged(int screenX, int screenY, int pointer) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean mouseMoved(int screenX, int screenY) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		@Override
-		public boolean scrolled(int amount) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-		
-	}
 }
