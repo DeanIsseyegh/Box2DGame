@@ -79,7 +79,7 @@ public class Player extends AbstractEntity implements IEntity {
 		blueBulletSpeed = 5f;
 		playerBullets = new Array<IBullet>();
 		walkingSpeed = 200f;
-		jumpSpeed = 350f;
+		jumpSpeed = 250f;
 	} 
 	
 	private void initAnimations(){
