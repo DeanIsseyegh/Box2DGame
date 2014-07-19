@@ -5,24 +5,40 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.GameTwo.Entities.IEntity;
 import com.mygdx.GameTwo.Entities.Bullets.IBullet;
+import com.mygdx.GameTwo.Entities.TiledMapItems.Coin;
+import com.mygdx.GameTwo.Entities.TiledMapItems.ITiledMapItem;
 
 public class CollisionManager {
 
 	private Array<IBullet> playerBullets;
+	private Array<ITiledMapItem> coins;
 	
 	public CollisionManager(){
 		playerBullets = new Array<IBullet>();
+		coins = new Array<>();
 	}
 	
-	public void handle() {
+	public void handle(IEntity player) {
 		// Handle player bullet hitting enemy
+		
+		// Handle player hittins coins
+		for(ITiledMapItem coin : coins){
+			System.out.println("Player X : " + player.getBounds().getX());
+			System.out.println("Player Y : " + player.getBounds().getY());
+			
+			System.out.println("Coin X : " + coin.getBoundsBox().getX());
+			System.out.println("Coin Y : " + coin.getBoundsBox().getY());
+			if (player.getBounds().overlaps(coin.getBoundsBox())){
+				coin.setActive(false);
+			}
+		}
 		
 		removeUneededObjects();
 	}
 
 	private void removeUneededObjects(){
 		// Psuedo code
-		// If bullet position is more than width of map then remove from array and dipose it.
+		// If bullet position is more than width of map then remove from array and dispose it.
 	}
 	
 	public void hookPlayerBullet(IBullet bullet){
@@ -69,6 +85,10 @@ public class CollisionManager {
 			isCollision = true;
 		
 		return isCollision;
+	}
+	
+	public void hookCoins(Array<ITiledMapItem> coins) { 
+		this.coins = coins; 
 	}
 
 }

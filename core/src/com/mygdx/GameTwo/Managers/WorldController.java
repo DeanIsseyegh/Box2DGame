@@ -1,7 +1,9 @@
 package com.mygdx.GameTwo.Managers;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.GameTwo.MainGame;
+import com.mygdx.GameTwo.Entities.TiledMapItems.ITiledMapItem;
 
 public class WorldController {
 	
@@ -25,10 +27,7 @@ public class WorldController {
 	public void setTiledMap(TiledMap tiledMap) { this.tiledMap = tiledMap; }
 	
 	public InputManager getInputManager() { return inputManager; }
-	
 
 	public CameraHelper getCameraHelper() { return cameraHelper; }
-
-
 	public void setCameraHelper(CameraHelper cameraHelper) { this.cameraHelper = cameraHelper; }
 }

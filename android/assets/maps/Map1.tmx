@@ -6,6 +6,32 @@
  <tileset firstgid="46" name="bg" tilewidth="64" tileheight="64">
   <image source="bg.png" width="512" height="512"/>
  </tileset>
+ <tileset firstgid="110" name="TileItems_512x512" tilewidth="64" tileheight="64" spacing="1" margin="1">
+  <image source="TileItems_512x512.png" width="512" height="512"/>
+ </tileset>
+ <tileset firstgid="159" name="coins" tilewidth="35" tileheight="35" spacing="2" margin="2">
+  <image source="../items/coins.png" width="256" height="64"/>
+  <tile id="0">
+   <properties>
+    <property name="animation" value="coin"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="animation" value="coin"/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="animation" value="coin"/>
+   </properties>
+  </tile>
+  <tile id="3">
+   <properties>
+    <property name="animation" value="coin"/>
+   </properties>
+  </tile>
+ </tileset>
  <layer name="Background" width="200" height="40">
   <data encoding="base64" compression="zlib">
    eJzt19lajmEAQNH/ihpUkjQQQima0GAmpPs/te/A4dfzvOtgH6xL2HOz2Wy+Fmqx7tUS8+BerpW6X6v1oNbqYa0zD+5HtVGbtVXb9bie1A7z4H5az+p57daLelmvao95cO/X6zqow3pTb+uojpkH90md1lm9q/f1oc7rgnlwX9bVzH8w+w9m/8HsP5j9B7P/YL6b9h/M/oPZfzD7D2b/wTy9/Qez/2D2H8z+g9l/ME9v/8HsP5j9B7P/YPYfzNPbfzD7D2b/wew/mP0H8/T2H8z+g9l/MPsPZv/BPL39B/P//+NjfarP9aW+1jfmwf29ftTPuq5f9bv+1A3z4P5bt/UP9vB2aA==
@@ -14,6 +40,11 @@
  <layer name="Platforms" width="200" height="40">
   <data encoding="base64" compression="zlib">
    eJzt0sENABAQRUEn0YAogP5rpAX2IGImeefdw08JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7TV22jcudNCDndeV7VjUbwHtxwuvNX7kHEBAhjBqw=
+  </data>
+ </layer>
+ <layer name="Items" width="200" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztzTEOABAUREE31yuVGlflBBKFH2QmeeVmUwIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHhf3wiAP5VZXdQCv058QpQcvAPgPgMnmhM8
   </data>
  </layer>
 </map>
