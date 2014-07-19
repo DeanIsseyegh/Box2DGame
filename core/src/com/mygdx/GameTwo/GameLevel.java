@@ -55,7 +55,7 @@ public class GameLevel implements Screen {
 		camHelper = new CameraHelper(cam, wc);
 		wc.setCameraHelper(camHelper);
 		wc.getInputManager().setControls();
-		
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		loadMap();
 		initPlayer();
 	}

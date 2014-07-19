@@ -18,11 +18,15 @@ public class GyroControls implements Runnable, Disposable {
 	public void run() {
 		while (shouldRun){
 			float accelY = Gdx.input.getAccelerometerY();
-			if (accelY > 0){
+			System.out.println(accelY);
+			if (accelY > 1.5){
 				inputManager.setGoRight(true);
 				inputManager.setGoLeft(false);
-			} else if (accelY < 0){
+			} else if (accelY < -1.5){
 				inputManager.setGoLeft(true);
+				inputManager.setGoRight(false);
+			} else { 
+				inputManager.setGoLeft(false);
 				inputManager.setGoRight(false);
 			}
 		}

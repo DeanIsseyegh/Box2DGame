@@ -31,13 +31,13 @@ public class AndroidControls implements GestureListener, Disposable {
 
 	@Override
 	public boolean tap(float x, float y, int count, int button) {
-		// TODO Auto-generated method stub
+		System.out.println("OUCH");
 		return false;
 	}
 
 	@Override
 	public boolean longPress(float x, float y) {
-		// TODO Auto-generated method stub
+		System.out.println("OUCH");
 		return false;
 	}
 
@@ -46,10 +46,6 @@ public class AndroidControls implements GestureListener, Disposable {
 		if (velocityY < -1000f){
 			inputManager.setGoJump(true);
 		} 
-		
-		if (inputManager.shouldGoJump() == true){
-			inputManager.setGoJump(false);
-		}
 		return true;
 	}
 

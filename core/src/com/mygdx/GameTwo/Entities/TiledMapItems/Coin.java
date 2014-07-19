@@ -7,14 +7,12 @@ public class Coin extends AbstractTiledMapItem implements ITiledMapItem {
 	
 	private int coinSize;
 	
-	public Coin(int x, int y, Cell cell, float f, float g){
-		super(x, y, cell, f, g);
-		System.out.println(f);
-		System.out.println(g);
+	public Coin(int x, int y, Cell cell, float tileWidth, float tileHeight){
+		super(x, y, cell, tileWidth, tileHeight);
 		coinSize = 35;
 		// Make offset so collision with coin feels tighter as in some of its frame its extremely thin
 		int offsetX = 20;
-		boundsBox.set((x * f) + offsetX, y * g, coinSize - offsetX, coinSize);
+		boundsBox.set((x * tileWidth) + offsetX, y * tileHeight, coinSize - offsetX, coinSize);
 	}
 	
 }

@@ -113,6 +113,7 @@ public class Player extends AbstractEntity implements IEntity {
 		case JUMPING_SHOOTING:
 			handleShootingState(PlayerState.JUMPING, deltaTime);
 		case JUMPING:
+			wc.getInputManager().setGoJump(false);
 			if (vel.y <= 0)
 				state = PlayerState.DEFAULT;
 			break;
