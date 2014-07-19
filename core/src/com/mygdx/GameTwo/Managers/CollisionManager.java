@@ -21,22 +21,20 @@ public class CollisionManager {
 	public void handle(IEntity player) {
 		// Handle player bullet hitting enemy
 		
-		// Handle player hittins coins
+		handleCoinCollision(player, coins);
+
+		removeUneededObjects();
+	}
+	
+	private void handleCoinCollision(IEntity player, Array<ITiledMapItem> coins) {
 		for(ITiledMapItem coin : coins){
-			System.out.println("Player X : " + player.getBounds().getX());
-			System.out.println("Player Y : " + player.getBounds().getY());
-			
-			System.out.println("Coin X : " + coin.getBoundsBox().getX());
-			System.out.println("Coin Y : " + coin.getBoundsBox().getY());
 			if (player.getBounds().overlaps(coin.getBoundsBox())){
 				coin.setActive(false);
 			}
 		}
-		
-		removeUneededObjects();
 	}
 
-	private void removeUneededObjects(){
+	private void removeUneededObjects() {
 		// Psuedo code
 		// If bullet position is more than width of map then remove from array and dispose it.
 	}

@@ -12,7 +12,10 @@ public class CameraHelper {
 		this.cam = cam;
 		this.wc = wc;
 	}
-
+	
+	public OrthographicCamera getCam() {
+		return cam;
+	}
 	public void followPlayer(float x, float y) {
 		cam.position.set(x + GameLevel.WIDTH / 2, y + GameLevel.HEIGHT / 2, 0);
 	}

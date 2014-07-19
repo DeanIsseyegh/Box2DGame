@@ -104,7 +104,8 @@ public abstract class AbstractEntity implements IEntity {
 			}
 			shapeRenderer.begin(ShapeType.Line);
 			shapeRenderer.setColor(Color.RED);
-			shapeRenderer.rect(boundsBox.getX(), boundsBox.getY(), width, height);
+			shapeRenderer.setProjectionMatrix(wc.getCameraHelper().getCam().combined);
+			shapeRenderer.rect(boundsBox.getX(), boundsBox.getY(), boundsBox.getWidth(), boundsBox.getHeight());
 			shapeRenderer.end();
 		}
 	}

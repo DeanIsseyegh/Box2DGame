@@ -119,7 +119,7 @@ public class GameLevel implements Screen {
 				if (cell != null){
 					if (cell.getTile().getProperties().containsKey("animation") && cell.getTile().getProperties().get("animation", String.class).equals("coin")){
 						cell.setTile(animatedTile);
-						ITiledMapItem coin = new Coin(x, y, cell);
+						ITiledMapItem coin = new Coin(x, y, cell, layer.getTileWidth(), layer.getTileHeight());
 						coins.add(coin);
 					}
 				}

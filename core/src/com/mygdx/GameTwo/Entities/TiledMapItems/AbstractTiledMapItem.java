@@ -10,13 +10,17 @@ public class AbstractTiledMapItem implements ITiledMapItem {
 	protected Cell cell;
 	protected Rectangle boundsBox;
 	protected boolean active;
+	protected float tileWidth;
+	protected float tileHeight;
 	
-	public AbstractTiledMapItem(int x, int y, Cell cell){
+	public AbstractTiledMapItem(int x, int y, Cell cell, float tileWidth, float tileHeight){
 		this.x = x;
 		this.y = y;
 		this.cell = cell;
 		boundsBox = new Rectangle();
 		this.active = true;
+		this.tileWidth = tileWidth;
+		this.tileHeight = tileHeight;
 	}
 	@Override
 	public int getX() {
