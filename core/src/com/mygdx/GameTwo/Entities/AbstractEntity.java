@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -25,9 +26,10 @@ public abstract class AbstractEntity implements IEntity {
 	
 	protected WorldController wc;
 	protected final float gravity = 400;
+	protected boolean isTouchingFloor;
 	
 	// Debug stuff
-	boolean debug;
+	protected boolean debug;
 	protected ShapeRenderer shapeRenderer;
 	
 	public AbstractEntity(WorldController wc){
@@ -97,6 +99,10 @@ public abstract class AbstractEntity implements IEntity {
 		return newTexRegion;
 	}
 	
+	protected void applyGravity(float deltaTime){
+		vel.y -= gravity * deltaTime;
+	}
+	
 	protected void renderDebug(){
 		if (debug == true){
 			if (shapeRenderer == null){
@@ -108,5 +114,42 @@ public abstract class AbstractEntity implements IEntity {
 			shapeRenderer.rect(boundsBox.getX(), boundsBox.getY(), boundsBox.getWidth(), boundsBox.getHeight());
 			shapeRenderer.end();
 		}
+	}
+	
+	
+	protected void handlePlatformCollisionY(TiledMapTileLayer collisionLayer, float oldPosX, float oldPosY){
+		isTouchingFloor = false;
+		if (vel.y < 0){ // Going Down
+			if (wc.getCollisionManager().collidesPlatformBottom(this, collisionLayer)){
+				collidedOnY(oldPosY);
+				isTouchingFloor = true;
+			} 
+		} else if (vel.y > 0){ // Going Up
+			if (wc.getCollisionManager().collidesPlatformTop(this, collisionLayer)){
+				collidedOnY(oldPosY);
+			}
+		}
+	}
+	
+	protected void handlePlatformCollisionX(TiledMapTileLayer collisionLayer, float oldPosX, float oldPosY){
+		if (vel.x < 0){ // Going Left
+			if (wc.getCollisionManager().collidesPlatformLeft(this, collisionLayer)){
+				collidedOnX(oldPosX);
+			}
+		} else if (vel.x > 0){ // Going Right
+			if (wc.getCollisionManager().collidesPlatformRight(this, collisionLayer)){
+				collidedOnX(oldPosX);
+			}
+		}
+	}
+	
+	protected void collidedOnX(float oldPosX){
+		vel.x = 0;
+		pos.x = oldPosX;
+	}
+	
+	protected void collidedOnY(float oldPosY){
+		vel.y = 0;
+		pos.y = oldPosY;
 	}
 }

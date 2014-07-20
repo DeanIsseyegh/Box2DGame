@@ -51,8 +51,6 @@ public class Player extends AbstractEntity implements IEntity {
 	private float jumpSpeed;
 	private float blueBulletSpeed;
 	
-	private boolean isTouchingFloor;
-	
 	private float tileHeight;
 	private TiledMapTileLayer mapLayer;
 	
@@ -67,6 +65,7 @@ public class Player extends AbstractEntity implements IEntity {
 		collisionWidth = 53;
 		collisionHeight = 23;
 		offsetX = 20;
+		offsetY = 3;
 		width = playerAnimations.getRegionWidth() - collisionWidth;
 		height = playerAnimations.getRegionHeight() - collisionHeight;
 	
@@ -78,8 +77,8 @@ public class Player extends AbstractEntity implements IEntity {
 		maxNumOfSlashPerSec = 1.5f;
 		blueBulletSpeed = 5f;
 		playerBullets = new Array<IBullet>();
-		walkingSpeed = 200f;
-		jumpSpeed = 250f;
+		walkingSpeed = 300f;
+		jumpSpeed = 450f;
 	} 
 	
 	private void initAnimations(){
@@ -185,10 +184,6 @@ public class Player extends AbstractEntity implements IEntity {
 		for (IBullet bullet : playerBullets){
 			bullet.update(deltaTime, batch);
 		}
-	}
-	
-	private void applyGravity(float deltaTime){
-		vel.y -= gravity * deltaTime;
 	}
 	
 	private void drawPlayer(SpriteBatch batch){
@@ -313,43 +308,6 @@ public class Player extends AbstractEntity implements IEntity {
 			} else if (wc.getInputManager().shouldGoSlash())
 				state = PlayerState.WALKING_SLASHING;
 		}
-	}
-	
-	private void handlePlatformCollisionY(TiledMapTileLayer collisionLayer, float oldPosX, float oldPosY){
-		isTouchingFloor = false;
-		
-		if (vel.y < 0){ // Going Down
-			if (wc.getCollisionManager().collidesPlatformBottom(this, collisionLayer)){
-				collidedOnY(oldPosY);
-				isTouchingFloor = true;
-			} 
-		} else if (vel.y > 0){ // Going Up
-			if (wc.getCollisionManager().collidesPlatformTop(this, collisionLayer)){
-				collidedOnY(oldPosY);
-			}
-		}
-	}
-	
-	private void handlePlatformCollisionX(TiledMapTileLayer collisionLayer, float oldPosX, float oldPosY){
-		if (vel.x < 0){ // Going Left
-			if (wc.getCollisionManager().collidesPlatformLeft(this, collisionLayer)){
-				collidedOnX(oldPosX);
-			}
-		} else if (vel.x > 0){ // Going Right
-			if (wc.getCollisionManager().collidesPlatformRight(this, collisionLayer)){
-				collidedOnX(oldPosX);
-			}
-		}
-	}
-	
-	private void collidedOnX(float oldPosX){
-		vel.x = 0;
-		pos.x = oldPosX;
-	}
-	
-	private void collidedOnY(float oldPosY){
-		vel.y = 0;
-		pos.y = oldPosY;
 	}
 	
 	@Override

@@ -6,10 +6,7 @@
  <tileset firstgid="46" name="bg" tilewidth="64" tileheight="64">
   <image source="bg.png" width="512" height="512"/>
  </tileset>
- <tileset firstgid="110" name="TileItems_512x512" tilewidth="64" tileheight="64" spacing="1" margin="1">
-  <image source="TileItems_512x512.png" width="512" height="512"/>
- </tileset>
- <tileset firstgid="159" name="coins" tilewidth="35" tileheight="35" spacing="2" margin="2">
+ <tileset firstgid="110" name="coins" tilewidth="35" tileheight="35" spacing="2" margin="2">
   <image source="../items/coins.png" width="256" height="64"/>
   <tile id="0">
    <properties>
@@ -32,19 +29,40 @@
    </properties>
   </tile>
  </tileset>
+ <tileset firstgid="116" name="TileItems" tilewidth="64" tileheight="64" spacing="2">
+  <image source="TileItems.png" width="1024" height="256"/>
+  <tile id="9">
+   <properties>
+    <property name="Type" value="Spikes"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="Type" value="Bouncer"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="161" name="TiledMapEnemiesRobot" tilewidth="124" tileheight="124">
+  <image source="TiledMapEnemiesRobot.png" width="256" height="256"/>
+ </tileset>
  <layer name="Background" width="200" height="40">
   <data encoding="base64" compression="zlib">
-   eJzt19lajmEAQNH/ihpUkjQQQima0GAmpPs/te/A4dfzvOtgH6xL2HOz2Wy+Fmqx7tUS8+BerpW6X6v1oNbqYa0zD+5HtVGbtVXb9bie1A7z4H5az+p57daLelmvao95cO/X6zqow3pTb+uojpkH90md1lm9q/f1oc7rgnlwX9bVzH8w+w9m/8HsP5j9B7P/YL6b9h/M/oPZfzD7D2b/wTy9/Qez/2D2H8z+g9l/ME9v/8HsP5j9B7P/YPYfzNPbfzD7D2b/wew/mP0H8/T2H8z+g9l/MPsPZv/BPL39B/P//+NjfarP9aW+1jfmwf29ftTPuq5f9bv+1A3z4P5bt/UP9vB2aA==
+   eJzt10dKBUEYhdFakTnnHJ85PxWMYNz/1OsKpFuwhTo/fIMzqRrfgVLKYBpKw2kkjTJX7rE0nibSZJpK02kmzTJX7rk0nxbSYlpKy2klrTJX7rW0njbSZtpK22kn7TJX7l7aS/vpIB2mo3ScTpgr92k6S+fpIl2mq9RP18yV+ybdFvuD2f5gtj+Y7Q9m+4PZ/mD+n7Y/mO0PZvuD2f5gtj+Yu7f9wWx/MNsfzPYHs/3B3L3tD2b7g9n+YLY/mO0P5u5tfzDbH8z2B7P9wWx/MHdv+4PZ/mC2P5jtD2b7g7l72x/MP++Ppvf9xmO6S/fpoaGbXv+X/zG38VN6Lu3uPb2k1/TW0H/9H3Mbf6TP9AVbVGKL
   </data>
  </layer>
  <layer name="Platforms" width="200" height="40">
   <data encoding="base64" compression="zlib">
-   eJzt0sENABAQRUEn0YAogP5rpAX2IGImeefdw08JAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7TV22jcudNCDndeV7VjUbwHtxwuvNX7kHEBAhjBqw=
+   eJzt21Fqg0AABNBAIeQCpQdIztmzt34UJMTYrDYzNO/B/ojCfuzO4KKnQ7fz9zilJ8HLuqQnsOJ46J8j/1d7NusPktqzWX+Q1J7N+oOk9mzWHyS1Z7P+IKk9m/UHSe3ZrD9Ias9m/UFSezbrD5Las1l/kNSezfqDpPZs1h8ktWez/iCpPZv1B0nt2aw/SGrPZv1BUns26w+SRrN5WrcfD4zRNa4/SNqybt8fGFv2of4gpT2b9QdJ7dmsP0hqz2b9QVJ7NusPktqzWX+QtJbNt85xr5+5d9a7Nfv1B0lr2XzrHPf6mXtnvVuzX3+QNM/mn6x+m40lv7lnD/qDpHk2N2Z145x4He3ZrD9Ias9m/UHSlM1bvzU8L1zfg/4gacrmkW8N5+/nx4Xr83f3pT24tvb1B0nPyualPXhv7X8e9AdZzdk87Q39QVJzNk97Q3+Q5P9BWDa6zkf/H3zWvoI9jJ5djZifdf31f7mwhy9WDhnu
   </data>
  </layer>
  <layer name="Items" width="200" height="40">
   <data encoding="base64" compression="zlib">
-   eJztzjEOgCAQRUFubk+nldBwVTkBCYkuGmeSV27+pgQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPB9bSL4k7O3T1TWvAm3yL1jUA3cemITomzBdwC8zwWhCBqo
+   eJzt2TsOgCAQBUBObGVLpSdQDyyljYSAn4gzyavYAO3uhgAAAAAAAAAAAAAAAAAAAAAAAAAAAPQkHtJS02q48W4AAADowVl/HjNnAADkle4n7DH4oyVlKsj61gfhAmPKXJDto+/Bk2rnUuZZAP3YAZVAGbY=
+  </data>
+ </layer>
+ <layer name="Enemies" width="200" height="40">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T+1hDaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAbn0AAAE=
   </data>
  </layer>
 </map>

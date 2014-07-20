@@ -17,6 +17,8 @@ import com.badlogic.gdx.maps.tiled.tiles.AnimatedTiledMapTile;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.mygdx.GameTwo.Entities.IEntity;
+import com.mygdx.GameTwo.Entities.Enemy1.Enemy1;
 import com.mygdx.GameTwo.Entities.Player.Player;
 import com.mygdx.GameTwo.Entities.TiledMapItems.Coin;
 import com.mygdx.GameTwo.Entities.TiledMapItems.ITiledMapItem;
@@ -41,6 +43,7 @@ public class GameLevel implements Screen {
 	private OrthogonalTiledMapRenderer tmRenderer;
 	
 	private Player player;
+	private IEntity enemy1;
 	
 	public GameLevel(WorldController wc){
 		this.wc = wc;
@@ -67,14 +70,12 @@ public class GameLevel implements Screen {
 		deltaTime = clampDeltaTime(deltaTime);
 		cam.update();
 		batch.setProjectionMatrix(cam.combined);
-		
 		tmRenderer.setView(cam);
 		tmRenderer.render();
-		
 		collisionManager.handle(player);
-		
 		batch.begin();
 		player.update(deltaTime, batch);
+		enemy1.update(deltaTime, batch);
 		batch.end();
 	}
 	
@@ -87,6 +88,8 @@ public class GameLevel implements Screen {
 	private void initPlayer() {
 		Vector2 startPos = new Vector2(100, 300);
 		player = new Player(startPos, wc);
+		startPos = new Vector2(300, 300);
+		enemy1 = new Enemy1(startPos, wc);
 	}
 	
 	private void loadMap() {
